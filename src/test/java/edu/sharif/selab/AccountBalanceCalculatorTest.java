@@ -91,73 +91,73 @@ public class AccountBalanceCalculatorTest {
                 "Transaction history should contain all transactions from the last calculation");
     }
 
+    @Test
+    void testTransactionHistoryShouldContainOnlyLastCalculationTransactions() {
+        // Perform first calculation with some transactions
+        List<Transaction> firstTransactions = Arrays.asList(
+                new Transaction(TransactionType.DEPOSIT, 100),
+                new Transaction(TransactionType.WITHDRAWAL, 50)
+        );
 
-   @Test
-   void testTransactionHistoryAfterDeposits() {
-       // Perform deposits
-       List<Transaction> transactions = Arrays.asList(
-               new Transaction(TransactionType.DEPOSIT, 100),
-               new Transaction(TransactionType.DEPOSIT, 200)
-       );
+        AccountBalanceCalculator.calculateBalance(firstTransactions);
 
-       // Calculate balance, which will also add transactions to the history
-       AccountBalanceCalculator.calculateBalance(transactions);
+        // Ensure the transaction history contains the correct transactions from the first calculation
+        List<Transaction> historyAfterFirstCalc = AccountBalanceCalculator.getTransactionHistory();
+        assertEquals(2, historyAfterFirstCalc.size(), "Transaction history should contain 2 transactions after the first calculation");
+        assertTrue(historyAfterFirstCalc.containsAll(firstTransactions), "Transaction history should contain the first set of transactions");
 
-       // Ensure the transaction history contains the correct transactions
-       List<Transaction> history = AccountBalanceCalculator.getTransactionHistory();
-       assertEquals(2, history.size(), "Transaction history should contain 2 transactions");
+        // Perform second calculation with different transactions
+        List<Transaction> secondTransactions = Arrays.asList(
+                new Transaction(TransactionType.DEPOSIT, 200),
+                new Transaction(TransactionType.WITHDRAWAL, 150)
+        );
 
-       // Check if the transactions are correctly recorded
-       assertTrue(history.containsAll(transactions), "Transaction history should contain both deposit transactions");
-   }
+        AccountBalanceCalculator.calculateBalance(secondTransactions);
 
-   @Test
-   void testTransactionHistoryAfterDepositsAndWithdrawals() {
-       // Perform deposits and withdrawals
-       List<Transaction> transactions = Arrays.asList(
-               new Transaction(TransactionType.DEPOSIT, 200),
-               new Transaction(TransactionType.WITHDRAWAL, 50),
-               new Transaction(TransactionType.DEPOSIT, 100)
-       );
+        // Ensure the transaction history only contains transactions from the second calculation
+        List<Transaction> historyAfterSecondCalc = AccountBalanceCalculator.getTransactionHistory();
+        assertEquals(2, historyAfterSecondCalc.size(), "Transaction history should contain 2 transactions after the second calculation");
+        assertTrue(historyAfterSecondCalc.containsAll(secondTransactions), "Transaction history should contain the second set of transactions");
+        assertFalse(historyAfterSecondCalc.containsAll(firstTransactions), "Transaction history should not contain the first set of transactions after the second calculation");
+    }
 
-       // Calculate balance
-       AccountBalanceCalculator.calculateBalance(transactions);
+    @Test
+    void testTransactionHistoryAfterDeposits() {
+        // Perform deposits
+        List<Transaction> transactions = Arrays.asList(
+                new Transaction(TransactionType.DEPOSIT, 100),
+                new Transaction(TransactionType.DEPOSIT, 200)
+        );
 
-       // Ensure the transaction history contains the correct transactions
-       List<Transaction> history = AccountBalanceCalculator.getTransactionHistory();
-       assertEquals(3, history.size(), "Transaction history should contain 3 transactions");
+        // Calculate balance, which will also add transactions to the history
+        AccountBalanceCalculator.calculateBalance(transactions);
 
-       // Check if the transactions are correctly recorded
-       assertTrue(history.containsAll(transactions), "Transaction history should contain all deposit and withdrawal transactions");
-   }
+        // Ensure the transaction history contains the correct transactions
+        List<Transaction> history = AccountBalanceCalculator.getTransactionHistory();
+        assertEquals(2, history.size(), "Transaction history should contain 2 transactions");
 
-   @Test
-   void testTransactionHistoryShouldContainOnlyLastCalculationTransactions() {
-       // Perform first calculation with some transactions
-       List<Transaction> firstTransactions = Arrays.asList(
-               new Transaction(TransactionType.DEPOSIT, 100),
-               new Transaction(TransactionType.WITHDRAWAL, 50)
-       );
+        // Check if the transactions are correctly recorded
+        assertTrue(history.containsAll(transactions), "Transaction history should contain both deposit transactions");
+    }
 
-       AccountBalanceCalculator.calculateBalance(firstTransactions);
+    @Test
+    void testTransactionHistoryAfterDepositsAndWithdrawals() {
+        // Perform deposits and withdrawals
+        List<Transaction> transactions = Arrays.asList(
+                new Transaction(TransactionType.DEPOSIT, 200),
+                new Transaction(TransactionType.WITHDRAWAL, 50),
+                new Transaction(TransactionType.DEPOSIT, 100)
+        );
 
-       // Ensure the transaction history contains the correct transactions from the first calculation
-       List<Transaction> historyAfterFirstCalc = AccountBalanceCalculator.getTransactionHistory();
-       assertEquals(2, historyAfterFirstCalc.size(), "Transaction history should contain 2 transactions after the first calculation");
-       assertTrue(historyAfterFirstCalc.containsAll(firstTransactions), "Transaction history should contain the first set of transactions");
+        // Calculate balance
+        AccountBalanceCalculator.calculateBalance(transactions);
 
-       // Perform second calculation with different transactions
-       List<Transaction> secondTransactions = Arrays.asList(
-               new Transaction(TransactionType.DEPOSIT, 200),
-               new Transaction(TransactionType.WITHDRAWAL, 150)
-       );
+        // Ensure the transaction history contains the correct transactions
+        List<Transaction> history = AccountBalanceCalculator.getTransactionHistory();
+        assertEquals(3, history.size(), "Transaction history should contain 3 transactions");
 
-       AccountBalanceCalculator.calculateBalance(secondTransactions);
+        // Check if the transactions are correctly recorded
+        assertTrue(history.containsAll(transactions), "Transaction history should contain all deposit and withdrawal transactions");
+    }
 
-       // Ensure the transaction history only contains transactions from the second calculation
-       List<Transaction> historyAfterSecondCalc = AccountBalanceCalculator.getTransactionHistory();
-       assertEquals(2, historyAfterSecondCalc.size(), "Transaction history should contain 2 transactions after the second calculation");
-       assertTrue(historyAfterSecondCalc.containsAll(secondTransactions), "Transaction history should contain the second set of transactions");
-       assertFalse(historyAfterSecondCalc.containsAll(firstTransactions), "Transaction history should not contain the first set of transactions after the second calculation");
-   }
 }
